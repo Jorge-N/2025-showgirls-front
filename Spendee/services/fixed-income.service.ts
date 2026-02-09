@@ -9,8 +9,8 @@ enum Frequency {
 export interface FixedIncomeResponse {
   id: number
   usuarioId: string
-  ingreso: Frequency
-  frecuencia: number
+  ingreso: number
+  frecuencia: Frequency
 }
 
 class FixedIncomeService {
