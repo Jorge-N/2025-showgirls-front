@@ -131,6 +131,25 @@ class ApiService {
     return this.handleResponse<T>(response)
   }
 
+  public static async patch<T>(
+    endpoint: string,
+    data?: unknown,
+    config: RequestConfig = {},
+  ): Promise<ApiResponse<T>> {
+    const { headers, ...restConfig } = config
+    const url = this.baseUrl + endpoint
+    const authHeader = await this.getAuthHeader()
+
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: { ...this.defaultHeaders, ...authHeader, ...headers },
+      body: data ? JSON.stringify(data) : undefined,
+      ...restConfig,
+    })
+
+    return this.handleResponse<T>(response)
+  }
+
   public static async delete<T>(
     endpoint: string,
     config: RequestConfig = {},
