@@ -1,11 +1,18 @@
 import { Text } from '@/components/ui/text'
+import useThemeColor from '@/theme/useThemeColor'
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import { BlurView } from 'expo-blur'
-import { Clock, Home, LucideIcon, PiggyBank, User } from 'lucide-react-native'
+import {
+  Banknote,
+  Clock,
+  Home,
+  LucideIcon,
+  PiggyBank,
+  User,
+} from 'lucide-react-native'
 import { useColorScheme } from 'nativewind'
 import React from 'react'
 import { Pressable } from 'react-native'
-import useThemeColor from '@/theme/useThemeColor'
 
 export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const icons: Record<string, LucideIcon> = {
@@ -13,6 +20,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     'profile/index': User,
     movements: Clock,
     piggy: PiggyBank,
+    'fixed-expenses': Banknote,
   }
   const { colorHex } = useThemeColor()
   return (

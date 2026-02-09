@@ -63,7 +63,6 @@ const ItemCard = ({
             <Pencil size={18} color="gray" />
           </Pressable>
         )}
-        {icon && <Icon size={20} color={iconColor} as={icon} />}
         {badgeText && (
           <Badge variant={badgeVariant}>
             <Text className="text-base" numberOfLines={1}>
@@ -71,6 +70,7 @@ const ItemCard = ({
             </Text>
           </Badge>
         )}
+        {icon && <Icon size={20} color={iconColor} as={icon} />}
       </View>
     </Card>
   )

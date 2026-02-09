@@ -32,6 +32,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
+        name="fixed-expenses"
+        options={{
+          title: 'Gastos Fijos',
+          tabBarLabel: 'Fijos',
+        }}
+      />
+      <Tabs.Screen
         name="profile/index"
         options={{
           title: 'Perfil',
