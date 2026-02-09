@@ -1,6 +1,7 @@
 import {
   BookOpen,
   Bus,
+  Car,
   Ellipsis,
   Gamepad2,
   Heart,
@@ -19,7 +20,6 @@ import {
   Utensils,
   Wine,
   Wrench,
-  Car
 } from 'lucide-react-native'
 
 const iconMap: Record<string, LucideIcon> = {
