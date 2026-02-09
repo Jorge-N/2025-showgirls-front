@@ -10,17 +10,18 @@ export default function useFixedExpenses() {
     queryFn: fixedExpenseService.findAll,
   })
 
-  const { mutateAsync: createFixedExpense } = useMutation({
-    mutationFn: fixedExpenseService.create,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['fixed-expenses'] })
-      router.replace('/fixed-expenses')
-      toastService.show('Gasto fijo creado con éxito', 'success')
-    },
-    onError: (error: Error) => {
-      toastService.show(error.message, 'error')
-    },
-  })
+  const { mutateAsync: createFixedExpense, isPending: isCreatingFixedExpense } =
+    useMutation({
+      mutationFn: fixedExpenseService.create,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['fixed-expenses'] })
+        router.replace('/fixed-expenses')
+        toastService.show('Gasto fijo creado con éxito', 'success')
+      },
+      onError: (error: Error) => {
+        toastService.show(error.message, 'error')
+      },
+    })
 
   const { mutateAsync: editFixedExpense } = useMutation({
     mutationFn: fixedExpenseService.update,
@@ -50,6 +51,7 @@ export default function useFixedExpenses() {
     fixedExpenses: data?.data,
     isFixedExpensesLoading,
     createFixedExpense,
+    isCreatingFixedExpense,
     editFixedExpense,
     deleteFixedExpense,
   }
