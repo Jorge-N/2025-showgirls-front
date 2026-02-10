@@ -17,7 +17,7 @@ class FixedExpenseService {
 
   public async findById(fixedExpenseId: number) {
     return await ApiService.get<FixedExpenseResponse>(
-      `/fixed-income/${fixedExpenseId}`,
+      `/fixed-expense/${fixedExpenseId}`,
     )
   }
 
