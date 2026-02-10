@@ -59,7 +59,8 @@ export default function FixedIncomeModal({
                   </Text>
                   <Input
                     placeholder="Ej: 500000"
-                    keyboardType="numeric"
+                    keyboardType="number-pad"
+                    maxLength={9}
                     value={ingreso}
                     onChangeText={setIngreso}
                     autoFocus

@@ -11,8 +11,9 @@ import {
   Landmark,
   ReceiptText,
   Wallet,
+  X,
 } from 'lucide-react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FlatList,
   Modal,
@@ -20,17 +21,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import {
-  configureReanimatedLogger,
-  ReanimatedLogLevel,
-} from 'react-native-reanimated'
 import ItemButton from './ItemButton'
 import { Badge } from './ui/badge'
-
-configureReanimatedLogger({
-  level: ReanimatedLogLevel.warn,
-  strict: false,
-})
 
 const METODOS_PAGO = [
   { id: 'tarjeta', label: 'Tarjeta', icon: CreditCard },
@@ -42,8 +34,9 @@ const METODOS_PAGO = [
 interface FixedExpenseModalProps {
   visible: boolean
   onClose: () => void
-  onSubmit: ({}) => void
+  onSubmit: (data: any) => void
   isSubmitting: boolean
+  initialData?: any
 }
 
 export default function FixedExpenseModal({
@@ -51,6 +44,7 @@ export default function FixedExpenseModal({
   onClose,
   onSubmit,
   isSubmitting,
+  initialData,
 }: FixedExpenseModalProps) {
   const { categoriesData } = useCategories()
 
@@ -62,8 +56,29 @@ export default function FixedExpenseModal({
 
   const [view, setView] = useState<'form' | 'date' | 'categories'>('form')
 
+  useEffect(() => {
+    if (visible && initialData) {
+      setNombre(initialData.nombre || '')
+      setMonto(String(initialData.gasto || ''))
+      setDia(initialData.diaDeVencimiento || 1)
+      setMetodo(initialData.metodoPago || 'tarjeta')
+      setCatId(initialData.categoriaId || null)
+    } else if (visible && !initialData) {
+      resetFields()
+    }
+  }, [visible, initialData])
+
   const isFormValid =
     nombre.trim() !== '' && monto.trim() !== '' && catId !== null
+
+  const resetFields = () => {
+    setNombre('')
+    setMonto('')
+    setDia(1)
+    setMetodo('tarjeta')
+    setCatId(null)
+    setView('form')
+  }
 
   const handleNext = () => {
     if (isFormValid) setView('date')
@@ -77,15 +92,7 @@ export default function FixedExpenseModal({
       metodoPago: metodo,
       categoriaId: catId,
     })
-    resetAndClose()
-  }
-
-  const resetAndClose = () => {
-    setNombre('')
-    setMonto('')
-    setDia(1)
-    setCatId(null)
-    setView('form')
+    if (!initialData) resetFields()
     onClose()
   }
 
@@ -103,7 +110,9 @@ export default function FixedExpenseModal({
           <View className="flex-row justify-between items-center mb-6">
             <Text className="text-2xl font-bold">
               {view === 'form'
-                ? 'Nuevo Gasto Fijo'
+                ? initialData
+                  ? 'Editar Gasto Fijo'
+                  : 'Nuevo Gasto Fijo'
                 : view === 'date'
                   ? 'Día de Vencimiento'
                   : 'Elegí Categoría'}
@@ -111,61 +120,67 @@ export default function FixedExpenseModal({
             <TouchableOpacity
               onPress={() => {
                 if (view === 'form') onClose()
-                else if (view === 'date') setView('form')
                 else setView('form')
               }}
             >
-              <Text className="text-primary font-bold">
-                {view === 'form' ? 'Cerrar' : 'Volver'}
-              </Text>
+              <View className="bg-secondary/50 p-2 rounded-full">
+                <X size={20} color="white" />
+              </View>
             </TouchableOpacity>
           </View>
 
           {view === 'form' && (
             <View className="gap-4">
-              <View className="gap-4">
-                <Text className="font-medium">Nombre</Text>
+              <View className="gap-2">
+                <Text className="font-medium ml-1">Nombre</Text>
                 <Input
                   placeholder="Nombre (ej: Suscripción)"
+                  maxLength={20}
                   value={nombre}
                   onChangeText={setNombre}
                 />
-                <Text className="font-medium">Monto mensual</Text>
+              </View>
+
+              <View className="gap-2">
+                <Text className="font-medium ml-1">Monto mensual</Text>
                 <Input
-                  placeholder="Monto (ej: $20000)"
+                  placeholder="Monto (ej: 20000)"
+                  maxLength={9}
                   keyboardType="numeric"
                   value={monto}
                   onChangeText={setMonto}
                 />
               </View>
 
-              <Text className="font-medium">Categoría</Text>
-              <TouchableOpacity
-                onPress={() => setView('categories')}
-                className="flex-row items-center justify-between p-4 bg-secondary/20 rounded-2xl border border-border"
-              >
-                <View className="flex-row items-center gap-2">
-                  <View
-                    className="w-4 h-4 rounded-full"
-                    style={{
-                      backgroundColor: selectedCategory?.color || 'gray',
-                    }}
-                  />
-                  <Text
-                    className={
-                      catId ? 'text-foreground' : 'text-muted-foreground'
-                    }
-                  >
-                    {selectedCategory
-                      ? selectedCategory.nombre
-                      : 'Elegir Categoría'}
-                  </Text>
-                </View>
-                <ChevronRight size={20} color="gray" />
-              </TouchableOpacity>
+              <View className="gap-2">
+                <Text className="font-medium ml-1">Categoría</Text>
+                <TouchableOpacity
+                  onPress={() => setView('categories')}
+                  className="flex-row items-center justify-between p-4 bg-secondary/20 rounded-2xl border border-border"
+                >
+                  <View className="flex-row items-center gap-2">
+                    <View
+                      className="w-4 h-4 rounded-full"
+                      style={{
+                        backgroundColor: selectedCategory?.color || 'gray',
+                      }}
+                    />
+                    <Text
+                      className={
+                        catId ? 'text-foreground' : 'text-muted-foreground'
+                      }
+                    >
+                      {selectedCategory
+                        ? selectedCategory.nombre
+                        : 'Seleccionar...'}
+                    </Text>
+                  </View>
+                  <ChevronRight size={20} color="gray" />
+                </TouchableOpacity>
+              </View>
 
-              <View className="gap-4">
-                <Text className="font-medium">Método de pago</Text>
+              <View className="gap-3">
+                <Text className="font-medium ml-1">Método de pago</Text>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   <View className="flex-row gap-2">
                     {METODOS_PAGO.map((m) => (
@@ -198,41 +213,39 @@ export default function FixedExpenseModal({
                 </ScrollView>
               </View>
 
-              <Button onPress={handleNext} disabled={!isFormValid}>
+              <Button
+                className="mt-4"
+                onPress={handleNext}
+                disabled={!isFormValid}
+              >
                 <Text>Siguiente</Text>
               </Button>
             </View>
           )}
 
           {view === 'date' && (
-            <View className="flex flex-col gap-4">
+            <View className="flex flex-col gap-6">
               <View className="items-center">
-                <Text className="text-muted-foreground text-center">
-                  Seleccioná el día del mes en que se debita este gasto
-                  habitualmente.
+                <Text className="text-muted-foreground text-center mb-4">
+                  ¿Qué día del mes se debita este gasto?
                 </Text>
                 <DayWheelPicker selectedDay={dia} onSelectDay={setDia} />
               </View>
-              {dia && (
-                <Badge variant="secondary">
-                  {dia === 1 ? (
-                    <Text className="text-sm">
-                      Vencerá el primer día de cada mes
-                    </Text>
-                  ) : dia === 31 ? (
-                    <Text className="text-sm">
-                      Vencerá el último día de cada mes
-                    </Text>
-                  ) : (
-                    <Text className="text-sm">
-                      Vencerá el {dia} de cada mes
-                    </Text>
-                  )}
-                </Badge>
-              )}
+
+              <Badge variant="secondary" className="py-3">
+                <Text className="text-center">
+                  {dia === 1
+                    ? 'Vence el primer día de cada mes'
+                    : dia === 31
+                      ? 'Vence el último día de cada mes'
+                      : `Vence el día ${dia} de cada mes`}
+                </Text>
+              </Badge>
 
               <Button onPress={handleSave} disabled={isSubmitting}>
-                <Text>Guardar Gasto Fijo</Text>
+                <Text>
+                  {initialData ? 'Guardar Cambios' : 'Crear Gasto Fijo'}
+                </Text>
               </Button>
             </View>
           )}
@@ -248,10 +261,8 @@ export default function FixedExpenseModal({
                   iconLeft={getIcon(item.icono)}
                   iconLeftColor={item.color}
                   iconRight={ChevronRight}
-                  iconRightColor="white"
                   background="background"
                   text={item.nombre}
-                  badgeText={`$ ${item.totalGastos}`}
                   onPress={() => {
                     setCatId(item.id)
                     setView('form')
