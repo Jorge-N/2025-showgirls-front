@@ -23,7 +23,8 @@ export default function useFixedIncomes() {
     })
 
   const { mutateAsync: editFixedIncome } = useMutation({
-    mutationFn: fixedIncomeService.update,
+    mutationFn: ({ id, data }: { id: number; data: any }) =>
+      fixedIncomeService.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['fixed-incomes'] })
       router.replace('/fixed')
