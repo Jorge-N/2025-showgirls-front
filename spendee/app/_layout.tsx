@@ -225,6 +225,21 @@ function RootNavigator() {
         name="streak/index"
         options={{ title: 'Rachas', headerBackTitle: 'Atrás' }}
       />
+
+      <Stack.Screen
+        name="fixed/fixed-incomes"
+        options={{ title: 'Ingresos fijos', headerBackTitle: 'Atrás' }}
+      />
+
+      <Stack.Screen
+        name="fixed/fixed-expenses"
+        options={{ title: 'Gastos fijos', headerBackTitle: 'Atrás' }}
+      />
+
+      <Stack.Screen
+        name="fixed/expense/[id]"
+        options={{ title: 'Gasto fijo', headerBackTitle: 'Atrás' }}
+      />
     </Stack>
   )
 }
