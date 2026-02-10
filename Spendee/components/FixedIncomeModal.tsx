@@ -2,7 +2,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Text } from '@/components/ui/text'
 import { cn } from '@/lib/utils'
-import React, { useState } from 'react'
+import { Frequency } from '@/services/fixed-income.service'
+import React, { useEffect, useState } from 'react'
 import {
   Modal,
   TouchableOpacity,
@@ -21,6 +22,7 @@ interface FixedIncomeModalProps {
   onClose: () => void
   onSubmit: ({}) => void
   isSubmitting: boolean
+  initialData?: { ingreso: number; frecuencia: Frequency }
 }
 
 export default function FixedIncomeModal({
@@ -28,9 +30,17 @@ export default function FixedIncomeModal({
   onClose,
   onSubmit,
   isSubmitting,
+  initialData,
 }: FixedIncomeModalProps) {
   const [ingreso, setIngreso] = useState('')
   const [frecuencia, setFrecuencia] = useState('MONTHLY')
+
+  useEffect(() => {
+    if (visible && initialData) {
+      setIngreso(String(initialData.ingreso))
+      setFrecuencia(initialData.frecuencia)
+    }
+  }, [visible, initialData])
 
   const handlePress = () => {
     if (!ingreso || isNaN(Number(ingreso))) return
