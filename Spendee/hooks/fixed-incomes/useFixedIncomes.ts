@@ -15,7 +15,6 @@ export default function useFixedIncomes() {
       mutationFn: fixedIncomeService.create,
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['fixed-incomes'] })
-        router.replace('/fixed-incomes')
         toastService.show('Ingreso fijo creado con éxito', 'success')
       },
       onError: (error: Error) => {
@@ -27,7 +26,7 @@ export default function useFixedIncomes() {
     mutationFn: fixedIncomeService.update,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['fixed-incomes'] })
-      router.replace('/fixed-incomes')
+      router.replace('/fixed')
       toastService.show('Ingreso fijo editado con éxito', 'success')
     },
     onError: (error: Error) => {
@@ -39,6 +38,7 @@ export default function useFixedIncomes() {
     mutationFn: fixedIncomeService.delete,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['fixed-incomes'] })
+      router.replace('/fixed')
       toastService.show('Ingreso fijo eliminado con éxito', 'success')
     },
     onError: (error: Error) => {
