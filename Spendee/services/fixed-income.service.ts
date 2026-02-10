@@ -1,6 +1,6 @@
 import ApiService from './api.service'
 
-enum Frequency {
+export enum Frequency {
   MONTHLY = 'Mensual',
   WEEKLY = 'Semanal',
   YEARLY = 'Anual',
