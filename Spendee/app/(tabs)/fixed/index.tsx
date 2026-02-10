@@ -7,7 +7,11 @@ import { Button } from '@/components/ui/button'
 import { Text } from '@/components/ui/text'
 import useFixedExpenses from '@/hooks/fixed-expenses/useFixedExpenses'
 import useFixedIncomes from '@/hooks/fixed-incomes/useFixedIncomes'
-import { getPaymentMethodIcon, getProximosVencimientos } from '@/lib/utils'
+import {
+  formatCurrencyShort,
+  getPaymentMethodIcon,
+  getProximosVencimientos,
+} from '@/lib/utils'
 import { Frequency } from '@/services/fixed-income.service'
 import { router } from 'expo-router'
 import { CalendarDays } from 'lucide-react-native'
@@ -110,10 +114,10 @@ export default function FixedPage() {
               ) : (
                 <>
                   <Text className="text-center">
-                    Te quedarán
+                    Te quedarán{' '}
                     <Text className="text-green-500 font-semibold">
                       ${new Intl.NumberFormat('es-AR').format(dineroLibre)}
-                    </Text>
+                    </Text>{' '}
                     libres
                   </Text>
                 </>
@@ -128,15 +132,18 @@ export default function FixedPage() {
           scrollEnabled={false}
           data={getProximosVencimientos(fixedExpenses)}
           renderItem={({ item }) => {
-            const isK = item.gasto % 1000 === 0
-            const isM = item.gasto % 1000000 === 0
             return (
               <ItemCard
                 title={item.nombre}
                 description={`Vence el día ${item.diaDeVencimiento} de cada mes`}
-                badgeText={`$${isK ? item.gasto / 1000 + 'K' : isM ? item.gasto / 1000000 + 'M' : item.gasto}`}
+                badgeText={`$${formatCurrencyShort(item.gasto)}`}
                 icon={getPaymentMethodIcon(item.metodoPago)}
-                onPress={() => {}}
+                onPress={() =>
+                  router.push({
+                    pathname: '/fixed/expense/[id]',
+                    params: { id: item.id },
+                  })
+                }
               />
             )
           }}

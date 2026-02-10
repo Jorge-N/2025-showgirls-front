@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button'
 import DollarSignSpinner from '@/components/ui/DollarSignSpinner'
 import { Text } from '@/components/ui/text'
 import useFixedIncomes from '@/hooks/fixed-incomes/useFixedIncomes'
+import { formatCurrencyShort } from '@/lib/utils'
 import { Frequency } from '@/services/fixed-income.service'
+import { router } from 'expo-router'
 import { CalendarDays, DollarSign, Plus } from 'lucide-react-native'
 import { useState } from 'react'
 import { FlatList, View } from 'react-native'
@@ -74,8 +76,6 @@ export default function FixedIncomesPage() {
           scrollEnabled={false}
           data={fixedIncomes}
           renderItem={({ item }) => {
-            const isK = item.ingreso % 1000 === 0
-            const isM = item.ingreso % 1000000 === 0
             return (
               <ItemCard
                 title={'Ingreso'}
@@ -84,10 +84,13 @@ export default function FixedIncomesPage() {
                     item.frecuencia as unknown as keyof typeof Frequency
                   ]
                 }
-                badgeText={`$${isK && !isM ? item.ingreso / 1000 + 'K' : isM ? item.ingreso / 1000000 + 'M' : item.ingreso}`}
+                badgeText={`$${formatCurrencyShort(item.ingreso)}`}
                 icon={DollarSign}
                 onPress={() => {
-                  /* Modal para editar o marcar como pagado */
+                  router.push({
+                    pathname: '/fixed/income/[id]',
+                    params: { id: item.id },
+                  })
                 }}
               />
             )

@@ -7,9 +7,9 @@ import { Button } from '@/components/ui/button'
 import DollarSignSpinner from '@/components/ui/DollarSignSpinner'
 import { Text } from '@/components/ui/text'
 import useFixedExpenses from '@/hooks/fixed-expenses/useFixedExpenses'
-import { getPaymentMethodIcon } from '@/lib/utils'
+import { formatCurrencyShort, getPaymentMethodIcon } from '@/lib/utils'
 import { router } from 'expo-router'
-import { CalendarDays, CreditCard, Plus } from 'lucide-react-native'
+import { CalendarDays, Plus } from 'lucide-react-native'
 import { useState } from 'react'
 import { FlatList, View } from 'react-native'
 
@@ -36,7 +36,7 @@ export default function FixedExpensesPage() {
   )
 
   return (
-    <Container activity={isCreatingFixedExpense}>
+    <Container activity={isCreatingFixedExpense || isFixedExpensesLoading}>
       <FixedExpenseModal
         visible={expenseModalVisible}
         onClose={() => setExpenseModalVisible(false)}
@@ -68,17 +68,11 @@ export default function FixedExpensesPage() {
           scrollEnabled={false}
           data={fixedExpenses}
           renderItem={({ item }) => {
-            const icon =
-              item.metodoPago === 'tarjeta'
-                ? CreditCard
-                : item.metodoPago === ''
-            const isK = item.gasto % 1000 === 0
-            const isM = item.gasto % 1000000 === 0
             return (
               <ItemCard
                 title={item.nombre}
                 description={`Vence el ${item.diaDeVencimiento} de cada mes`}
-                badgeText={`$${isK && !isM ? item.gasto / 1000 + 'K' : isM ? item.gasto / 1000000 + 'M' : item.gasto}`}
+                badgeText={`$${formatCurrencyShort(item.gasto)}`}
                 icon={getPaymentMethodIcon(item.metodoPago)}
                 onPress={() => {
                   router.push({

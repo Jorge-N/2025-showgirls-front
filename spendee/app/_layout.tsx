@@ -240,6 +240,11 @@ function RootNavigator() {
         name="fixed/expense/[id]"
         options={{ title: 'Gasto fijo', headerBackTitle: 'Atrás' }}
       />
+
+      <Stack.Screen
+        name="fixed/income/[id]"
+        options={{ title: 'Ingreso fijo', headerBackTitle: 'Atrás' }}
+      />
     </Stack>
   )
 }
