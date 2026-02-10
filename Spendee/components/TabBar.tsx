@@ -20,7 +20,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     'profile/index': User,
     movements: Clock,
     piggy: PiggyBank,
-    'fixed-expenses': Banknote,
+    'fixed/index': Banknote,
   }
   const { colorHex } = useThemeColor()
   return (
