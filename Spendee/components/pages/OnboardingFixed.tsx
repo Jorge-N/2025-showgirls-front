@@ -1,7 +1,8 @@
 import useFixedExpenses from '@/hooks/fixed-expenses/useFixedExpenses'
 import useFixedIncomes from '@/hooks/fixed-incomes/useFixedIncomes'
 import { CalendarDays } from 'lucide-react-native'
-import { Text, View } from 'react-native'
+import { useEffect, useRef } from 'react'
+import { Animated, Text, View } from 'react-native'
 import Container from '../Container'
 import FixedExpenseModal from '../FixedExpenseModal'
 import FixedIncomeModal from '../FixedIncomeModal'
@@ -24,9 +25,24 @@ export default function OnboardingFixed({
 }: OnboardingFixedProps) {
   const { createFixedExpense, isCreatingFixedExpense } = useFixedExpenses()
   const { createFixedIncome, isCreatingFixedIncome } = useFixedIncomes()
+
+  const fadeAnim = useRef(new Animated.Value(0)).current
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start()
+  }, [fadeAnim])
+
   return (
     <Container>
-      <View className="flex-1 justify-center items-center p-6">
+      <Animated.View
+        style={{ opacity: fadeAnim }}
+        key="container"
+        className="flex-1 justify-center items-center p-6"
+      >
         <View className="bg-primary/10 p-6 rounded-full mb-6">
           <CalendarDays size={80} color="#16a34a" />
         </View>
@@ -38,7 +54,7 @@ export default function OnboardingFixed({
         <Text className="text-muted-foreground text-center text-lg mb-8">
           {isStep1
             ? 'Para comenzar con tu seguimiento de gastos fijos, primero necesitamos saber cuánto dinero recibís de forma regular.'
-            : 'Perfecto. Ahora añadí un gasto fijos (alquiler, Netflix, servicios) para completar tu flujo mensual.'}
+            : 'Perfecto. Ahora añadí un gasto fijo (alquiler, Netflix, servicios) para completar tu flujo mensual.'}
         </Text>
 
         <Button
@@ -55,7 +71,7 @@ export default function OnboardingFixed({
             {isStep1 ? 'Añadir mi primer ingreso' : 'Añadir mi primer gasto'}
           </Text>
         </Button>
-      </View>
+      </Animated.View>
 
       <FixedIncomeModal
         visible={incomeModalVisible}

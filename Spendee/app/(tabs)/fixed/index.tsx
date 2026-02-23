@@ -84,7 +84,10 @@ export default function FixedPage() {
                 onPress={() => router.push('/fixed/fixed-incomes')}
               >
                 <Text className="text-3xl font-bold">
-                  ${new Intl.NumberFormat('es-AR').format(totalIngresosFijos)}
+                  $
+                  {new Intl.NumberFormat('es-AR', {
+                    maximumFractionDigits: 0,
+                  }).format(totalIngresosFijos)}
                 </Text>
               </Button>
             </View>
@@ -98,7 +101,10 @@ export default function FixedPage() {
                 onPress={() => router.push('/fixed/fixed-expenses')}
               >
                 <Text className="text-3xl font-bold">
-                  ${new Intl.NumberFormat('es-AR').format(totalGastosFijos)}
+                  $
+                  {new Intl.NumberFormat('es-AR', {
+                    maximumFractionDigits: 0,
+                  }).format(totalGastosFijos)}
                 </Text>
               </Button>
             </View>
@@ -107,9 +113,15 @@ export default function FixedPage() {
             <View className="flex-row items-center justify-between">
               {dineroLibre < 0 ? (
                 <Text className="text-center">
-                  Actualmente estarías{' '}
-                  <Text className="text-destructive">gastando más</Text> de lo
-                  que te ingresa
+                  Actualmente estás{' '}
+                  <Text className="text-destructive">
+                    gastando $
+                    {new Intl.NumberFormat('es-AR', {
+                      maximumFractionDigits: 0,
+                    }).format(-dineroLibre)}{' '}
+                    más
+                  </Text>{' '}
+                  de lo que te ingresa
                 </Text>
               ) : (
                 <>
