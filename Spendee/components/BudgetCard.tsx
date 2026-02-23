@@ -28,18 +28,21 @@ export default function BudgetCard({
   const montoRestante = (
     (montoPresupuestado ?? 0) - (montoTotalGastado ?? 0)
   ).toLocaleString('es-AR')
-  const fechaInicio = new Date(budget?.fechaInicio!).toLocaleDateString(
-    'es-ES',
-    new Date(budget?.fechaInicio!).getFullYear() === new Date().getFullYear()
-      ? { day: 'numeric', month: 'short' }
-      : {},
-  )
-  const fechaFin = new Date(budget?.fechaFin!).toLocaleDateString(
-    'es-ES',
-    new Date(budget?.fechaInicio!).getFullYear() === new Date().getFullYear()
-      ? { day: 'numeric', month: 'short' }
-      : {},
-  )
+  const formatUTCDate = (dateInput: Date | string) => {
+    const d = new Date(dateInput)
+    const day = d.getUTCDate()
+    const month = d.getUTCMonth()
+    const year = d.getUTCFullYear()
+
+    return new Date(year, month, day).toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'short',
+      ...(year !== new Date().getFullYear() ? { year: 'numeric' } : {}),
+    })
+  }
+
+  const fechaInicio = formatUTCDate(budget.fechaInicio)
+  const fechaFin = formatUTCDate(budget.fechaFin)
   const diasRestantes =
     new Date(budget.fechaFin) < new Date()
       ? 0
